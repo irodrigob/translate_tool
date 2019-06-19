@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_CLAS" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <VSEOCLASS>
+    <CLSNAME>ZTRANSLATE_UTILITIES</CLSNAME>
+    <LANGU>S</LANGU>
+    <DESCRIPT>Utilities ITAB dinámicas</DESCRIPT>
+    <STATE>1</STATE>
+    <CLSCCINCL>X</CLSCCINCL>
+    <FIXPT>X</FIXPT>
+    <UNICODE>X</UNICODE>
+   </VSEOCLASS>
+   <DESCRIPTIONS>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTRANSLATE_UTILITIES</CLSNAME>
+     <CMPNAME>CREATE_IT_FIELDS_BASE</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Create internat table from some base camps</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTRANSLATE_UTILITIES</CLSNAME>
+     <CMPNAME>CREATE_IT_FIELDS_BASE</CMPNAME>
+     <LANGU>S</LANGU>
+     <DESCRIPT>Create internat table from some base camps</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTRANSLATE_UTILITIES</CLSNAME>
+     <CMPNAME>CREATE_IT_FIELDS_BASE_REF</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Create internat table from reference some base camps</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTRANSLATE_UTILITIES</CLSNAME>
+     <CMPNAME>CREATE_IT_FIELDS_BASE_REF</CMPNAME>
+     <LANGU>S</LANGU>
+     <DESCRIPT>Create internat table from reference some base camps</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTRANSLATE_UTILITIES</CLSNAME>
+     <CMPNAME>CREATE_IT_FROM_FCAT</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Create internat table from fieldcatalog</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTRANSLATE_UTILITIES</CLSNAME>
+     <CMPNAME>CREATE_IT_FROM_FCAT</CMPNAME>
+     <LANGU>S</LANGU>
+     <DESCRIPT>Create internat table from fieldcatalog</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTRANSLATE_UTILITIES</CLSNAME>
+     <CMPNAME>CREATE_IT_FROM_STRUC</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Create internal table from name of structure</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTRANSLATE_UTILITIES</CLSNAME>
+     <CMPNAME>CREATE_IT_FROM_STRUC</CMPNAME>
+     <LANGU>S</LANGU>
+     <DESCRIPT>Create internal table from name of structure</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTRANSLATE_UTILITIES</CLSNAME>
+     <CMPNAME>CREATE_WA_FROM_STRUC</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Create work area from name of structure</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTRANSLATE_UTILITIES</CLSNAME>
+     <CMPNAME>CREATE_WA_FROM_STRUC</CMPNAME>
+     <LANGU>S</LANGU>
+     <DESCRIPT>Create work area from name of structure</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTRANSLATE_UTILITIES</CLSNAME>
+     <CMPNAME>D_TEXT_TYPE</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Literal of type in absolute name</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTRANSLATE_UTILITIES</CLSNAME>
+     <CMPNAME>D_TEXT_TYPE</CMPNAME>
+     <LANGU>S</LANGU>
+     <DESCRIPT>Literal of type in absolute name</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTRANSLATE_UTILITIES</CLSNAME>
+     <CMPNAME>GET_COMPONENT_FROM_FCAT</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Get components from fieldcat</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTRANSLATE_UTILITIES</CLSNAME>
+     <CMPNAME>GET_COMPONENT_FROM_FCAT</CMPNAME>
+     <LANGU>S</LANGU>
+     <DESCRIPT>Get components from fieldcat</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTRANSLATE_UTILITIES</CLSNAME>
+     <CMPNAME>GET_NAME_OF_TYPE</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Gets the name of the pointer data type</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTRANSLATE_UTILITIES</CLSNAME>
+     <CMPNAME>GET_NAME_OF_TYPE</CMPNAME>
+     <LANGU>S</LANGU>
+     <DESCRIPT>Gets the name of the pointer data type</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTRANSLATE_UTILITIES</CLSNAME>
+     <CMPNAME>PIVOT_TABLE</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Pivot table based on another</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTRANSLATE_UTILITIES</CLSNAME>
+     <CMPNAME>PIVOT_TABLE</CMPNAME>
+     <LANGU>S</LANGU>
+     <DESCRIPT>Pivot table based on another</DESCRIPT>
+    </SEOCOMPOTX>
+   </DESCRIPTIONS>
+  </asx:values>
+ </asx:abap>
+</abapGit>
