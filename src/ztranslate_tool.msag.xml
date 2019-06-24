@@ -1,0 +1,169 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_MSAG" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <T100A>
+    <ARBGB>ZTRANSLATE_TOOL</ARBGB>
+    <MASTERLANG>S</MASTERLANG>
+    <STEXT>Message class for translate tool</STEXT>
+   </T100A>
+   <T100>
+    <T100>
+     <SPRSL>S</SPRSL>
+     <ARBGB>ZTRANSLATE_TOOL</ARBGB>
+     <MSGNR>000</MSGNR>
+     <TEXT>&amp; &amp; &amp; &amp;</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>S</SPRSL>
+     <ARBGB>ZTRANSLATE_TOOL</ARBGB>
+     <MSGNR>001</MSGNR>
+     <TEXT>Select a object to translate</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>S</SPRSL>
+     <ARBGB>ZTRANSLATE_TOOL</ARBGB>
+     <MSGNR>002</MSGNR>
+     <TEXT>Search of pattern or exclusion not allowed</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>S</SPRSL>
+     <ARBGB>ZTRANSLATE_TOOL</ARBGB>
+     <MSGNR>003</MSGNR>
+     <TEXT>Introduced languages don&apos;t exist</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>S</SPRSL>
+     <ARBGB>ZTRANSLATE_TOOL</ARBGB>
+     <MSGNR>004</MSGNR>
+     <TEXT>The &amp; &amp; don&apos;t exist in the TADIR</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>S</SPRSL>
+     <ARBGB>ZTRANSLATE_TOOL</ARBGB>
+     <MSGNR>005</MSGNR>
+     <TEXT>No data found.</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>S</SPRSL>
+     <ARBGB>ZTRANSLATE_TOOL</ARBGB>
+     <MSGNR>006</MSGNR>
+     <TEXT>Error save the text of object &amp; &amp;</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>S</SPRSL>
+     <ARBGB>ZTRANSLATE_TOOL</ARBGB>
+     <MSGNR>007</MSGNR>
+     <TEXT>Data saved</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>S</SPRSL>
+     <ARBGB>ZTRANSLATE_TOOL</ARBGB>
+     <MSGNR>008</MSGNR>
+     <TEXT>Objects added in the transport order &amp;</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>S</SPRSL>
+     <ARBGB>ZTRANSLATE_TOOL</ARBGB>
+     <MSGNR>009</MSGNR>
+     <TEXT>No transport request</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>S</SPRSL>
+     <ARBGB>ZTRANSLATE_TOOL</ARBGB>
+     <MSGNR>010</MSGNR>
+     <TEXT>No data changed</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>S</SPRSL>
+     <ARBGB>ZTRANSLATE_TOOL</ARBGB>
+     <MSGNR>011</MSGNR>
+     <TEXT>Please, saved before the changes</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>S</SPRSL>
+     <ARBGB>ZTRANSLATE_TOOL</ARBGB>
+     <MSGNR>012</MSGNR>
+     <TEXT>Object &amp; not allowed</TEXT>
+    </T100>
+   </T100>
+   <I18N_LANGS>
+    <LANGU>E</LANGU>
+   </I18N_LANGS>
+   <T100T>
+    <T100T>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZTRANSLATE_TOOL</ARBGB>
+     <STEXT>Message for translation tool</STEXT>
+    </T100T>
+   </T100T>
+   <T100_TEXTS>
+    <item>
+     <SPRSL>E</SPRSL>
+     <MSGNR>000</MSGNR>
+     <TEXT>&amp; &amp; &amp; &amp;</TEXT>
+    </item>
+    <item>
+     <SPRSL>E</SPRSL>
+     <MSGNR>001</MSGNR>
+     <TEXT>Select a object to translate.</TEXT>
+    </item>
+    <item>
+     <SPRSL>E</SPRSL>
+     <MSGNR>002</MSGNR>
+     <TEXT>Search of pattern or exclusion not allowed.</TEXT>
+    </item>
+    <item>
+     <SPRSL>E</SPRSL>
+     <MSGNR>003</MSGNR>
+     <TEXT>Introduced languages don&apos;t exist.</TEXT>
+    </item>
+    <item>
+     <SPRSL>E</SPRSL>
+     <MSGNR>004</MSGNR>
+     <TEXT>The &amp; &amp; don&apos;t exist.</TEXT>
+    </item>
+    <item>
+     <SPRSL>E</SPRSL>
+     <MSGNR>005</MSGNR>
+     <TEXT>No data found.</TEXT>
+    </item>
+    <item>
+     <SPRSL>E</SPRSL>
+     <MSGNR>006</MSGNR>
+     <TEXT>Error save the text of object &amp; &amp;.</TEXT>
+    </item>
+    <item>
+     <SPRSL>E</SPRSL>
+     <MSGNR>007</MSGNR>
+     <TEXT>Data saved.</TEXT>
+    </item>
+    <item>
+     <SPRSL>E</SPRSL>
+     <MSGNR>008</MSGNR>
+     <TEXT>Objects added in the transport order &amp;.</TEXT>
+    </item>
+    <item>
+     <SPRSL>E</SPRSL>
+     <MSGNR>009</MSGNR>
+     <TEXT>No transport request.</TEXT>
+    </item>
+    <item>
+     <SPRSL>E</SPRSL>
+     <MSGNR>010</MSGNR>
+     <TEXT>No data changed.</TEXT>
+    </item>
+    <item>
+     <SPRSL>E</SPRSL>
+     <MSGNR>011</MSGNR>
+     <TEXT>Please, saved before the changes.</TEXT>
+    </item>
+    <item>
+     <SPRSL>E</SPRSL>
+     <MSGNR>012</MSGNR>
+     <TEXT>Object &amp; not allowed.</TEXT>
+    </item>
+   </T100_TEXTS>
+  </asx:values>
+ </asx:abap>
+</abapGit>
