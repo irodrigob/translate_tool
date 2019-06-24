@@ -7,14 +7,14 @@
 *       text
 *----------------------------------------------------------------------*
 FORM evt_initialization .
-  DATA ls_allowed_object LIKE LINE OF it_allowed_object.
+  DATA ls_allowed_object LIKE LINE OF mt_allowed_object.
 
 * Se instancia la clase que gestionara todo la herramientra de traduccion.
-  CREATE OBJECT go_proces.
+  CREATE OBJECT mo_proces.
 
 * Se recupera los objetos permitidos en base a las clases de componentes
 * parametrizadas.
-  it_allowed_object = go_proces->get_allowed_objects( ).
+  mt_allowed_object = mo_proces->get_allowed_objects( ).
 
 * Idioma fuente por defecto
   CALL FUNCTION 'LXE_T002_CHECK_LANGUAGE'
@@ -24,11 +24,11 @@ FORM evt_initialization .
       o_language = p_olang.
 
 * Indico que los refrescos de los ALV no se moverán de filas y columna
-  et_stable-row = abap_true.
-  et_stable-col = abap_true.
+  ms_stable-row = abap_true.
+  ms_stable-col = abap_true.
 
 * Nombre del programa para variantes.
-  et_variant-report = sy-cprog.
+  ms_variant-report = sy-cprog.
 ENDFORM.                    " EVT_INITIALIZATION
 *&---------------------------------------------------------------------*
 *&      Form  F4_OBJECT
@@ -45,7 +45,7 @@ FORM f4_object .
       dynprofield     = 'P_OBJECT'
       value_org       = 'S'
     TABLES
-      value_tab       = it_allowed_object
+      value_tab       = mt_allowed_object
     EXCEPTIONS
       parameter_error = 1
       no_values_found = 2
@@ -61,11 +61,11 @@ FORM check_bl1 .
     MESSAGE e001.
   ELSE.
 * Compruebo si el objeto es valido
-    READ TABLE it_allowed_object TRANSPORTING NO FIELDS
+    READ TABLE mt_allowed_object TRANSPORTING NO FIELDS
                                  WITH KEY object = p_object.
     IF sy-subrc = 0.
 * Compruebo si el objeto existe
-      IF go_proces->check_obj_2_trans( i_object = p_object i_obj_name = p_oname ) = abap_false.
+      IF mo_proces->check_obj_2_trans( iv_object = p_object iv_obj_name = p_oname ) = abap_false.
         MESSAGE e004 WITH p_object p_oname.
       ENDIF.
     ELSE.
@@ -82,11 +82,11 @@ ENDFORM.                    " CHECK_BL1
 FORM load_object_texts .
 
 * Se leen los textos del objeto y sus componentes.
-  go_proces->load_object_texts( ).
+  mo_proces->load_object_texts( ).
 
 * Se recuperan el texto del objeto con sus componentes.
-  go_it_data = go_proces->get_data( ).
-  ASSIGN go_it_data->* TO <it_datos>.
+  mo_it_data = mo_proces->get_data( ).
+  ASSIGN mo_it_data->* TO <it_datos>.
 
 ENDFORM.                    " LOAD_OBJECT_TEXTS
 *&---------------------------------------------------------------------*
@@ -206,12 +206,12 @@ FORM set_params_selscreen .
   SORT lt_tlang.
   DELETE ADJACENT DUPLICATES FROM lt_tlang.
 
-  CALL METHOD go_proces->set_params_selscreen
+  CALL METHOD mo_proces->set_params_selscreen
     EXPORTING
-      i_olang      = p_olang
-      i_t_tlang    = lt_tlang
-      i_trkorr     = p_trkorr
-      i_depth_refs = p_drefs.
+      iv_olang      = p_olang
+      it_tlang    = lt_tlang
+      iv_trkorr     = p_trkorr
+      iv_depth_refs = p_drefs.
 
 ENDFORM.                    " SET_PARAMS_SELSCREEN
 *&---------------------------------------------------------------------*
@@ -240,7 +240,7 @@ FORM data_changed  CHANGING ps_data_changed TYPE REF TO cl_alv_changed_data_prot
   LOOP AT ps_data_changed->mt_mod_cells ASSIGNING <ls_modif>.
 * En el primer registro se marca que los datos han sido modificados
     AT FIRST.
-      d_datos_modif = abap_true.
+      mv_datos_modif = abap_true.
     ENDAT.
 * Registro cada vez que se modifica una fila.
     AT NEW row_id.
@@ -260,8 +260,8 @@ FORM data_changed  CHANGING ps_data_changed TYPE REF TO cl_alv_changed_data_prot
 
 * Para actualizar el campo de control tengo que reemplazar el texto del nombre del campo
 * por el de control.
-    REPLACE go_proces->dc_field_txt_lang IN ld_fieldname
-            WITH go_proces->dc_field_ctrl_lang.
+    REPLACE mo_proces->mc_field_txt_lang IN ld_fieldname
+            WITH mo_proces->mc_field_ctrl_lang.
 
 * Actualizo el campo de control
     ASSIGN COMPONENT ld_fieldname OF STRUCTURE <wa> TO <field>.
@@ -277,7 +277,7 @@ FORM data_changed  CHANGING ps_data_changed TYPE REF TO cl_alv_changed_data_prot
       EXPORTING
         i_row_id    = <ls_modif>-row_id
         i_fieldname = <ls_modif>-fieldname
-        i_style     = go_proces->dc_style_text_changed.
+        i_style     = mo_proces->mc_style_text_changed.
 
   ENDLOOP.
 
@@ -288,17 +288,17 @@ ENDFORM.                    " DATA_CHANGED
 *       text
 *----------------------------------------------------------------------*
 FORM buttons_exclude_alv .
-*it_excluding
-  APPEND cl_gui_alv_grid=>mc_fc_loc_append_row TO it_excluding.
-  APPEND cl_gui_alv_grid=>mc_fc_loc_copy TO it_excluding.
-  APPEND cl_gui_alv_grid=>mc_fc_loc_copy_row TO it_excluding.
-  APPEND cl_gui_alv_grid=>mc_fc_loc_cut TO it_excluding.
-  APPEND cl_gui_alv_grid=>mc_fc_loc_delete_row TO it_excluding.
-  APPEND cl_gui_alv_grid=>mc_fc_loc_insert_row TO it_excluding.
-  APPEND cl_gui_alv_grid=>mc_fc_loc_move_row TO it_excluding.
-  APPEND cl_gui_alv_grid=>mc_fc_loc_paste TO it_excluding.
-  APPEND cl_gui_alv_grid=>mc_fc_loc_paste_new_row TO it_excluding.
-  APPEND cl_gui_alv_grid=>mc_fc_loc_undo  TO it_excluding.
+*mt_excluding
+  APPEND cl_gui_alv_grid=>mc_fc_loc_append_row TO mt_excluding.
+  APPEND cl_gui_alv_grid=>mc_fc_loc_copy TO mt_excluding.
+  APPEND cl_gui_alv_grid=>mc_fc_loc_copy_row TO mt_excluding.
+  APPEND cl_gui_alv_grid=>mc_fc_loc_cut TO mt_excluding.
+  APPEND cl_gui_alv_grid=>mc_fc_loc_delete_row TO mt_excluding.
+  APPEND cl_gui_alv_grid=>mc_fc_loc_insert_row TO mt_excluding.
+  APPEND cl_gui_alv_grid=>mc_fc_loc_move_row TO mt_excluding.
+  APPEND cl_gui_alv_grid=>mc_fc_loc_paste TO mt_excluding.
+  APPEND cl_gui_alv_grid=>mc_fc_loc_paste_new_row TO mt_excluding.
+  APPEND cl_gui_alv_grid=>mc_fc_loc_undo  TO mt_excluding.
 ENDFORM.                    " BUTTONS_EXCLUDE_ALV
 *&---------------------------------------------------------------------*
 *&      Form  save_data
@@ -308,13 +308,13 @@ ENDFORM.                    " BUTTONS_EXCLUDE_ALV
 FORM save_data.
   DATA ls_return TYPE bapiret2.
 
-  IF d_datos_modif = abap_true.
+  IF mv_datos_modif = abap_true.
 
 * Se pasa los datos a la clase de control
-    go_proces->set_data( go_it_data ).
+    mo_proces->set_data( mo_it_data ).
 
 * Se graban los datos
-    ls_return = go_proces->save_data( ).
+    ls_return = mo_proces->save_data( ).
 
     CASE ls_return-type.
 * Los mensajes de error se muestran como informativos pero de tipo error.
@@ -325,7 +325,7 @@ FORM save_data.
                        DISPLAY LIKE 'E'.
       WHEN OTHERS.
 * Una vez grabado sin error se marca que los datos no están modificados.
-        d_datos_modif = abap_false.
+        mv_datos_modif = abap_false.
 
         MESSAGE ID ls_return-id TYPE ls_return-type
                        NUMBER ls_return-number
@@ -336,7 +336,7 @@ FORM save_data.
 * No es necesario recuperar los datos porque ya se han hecho con anterioridad a través
 * de punteros. Por lo que todo se haga en la clase o programa se ve reflejando en ambos sitios
 * sin necesidad de traspasar de nuevo los datos. Viva los punteros :-)
-    CALL METHOD go_alv->refresh_table_display( EXPORTING is_stable = et_stable ).
+    CALL METHOD mo_alv->refresh_table_display( EXPORTING is_stable = ms_stable ).
 
   ELSE.
     MESSAGE s010.
@@ -487,7 +487,7 @@ FORM toolbar_alv CHANGING ps_object TYPE REF TO cl_alv_event_toolbar_set
 
 * Boton de transporte
   CLEAR ls_toolbar.
-  MOVE dc_transport TO ls_toolbar-function.
+  MOVE mc_transport TO ls_toolbar-function.
   MOVE icon_transport TO ls_toolbar-icon.
   MOVE text-q01 TO ls_toolbar-quickinfo.
   MOVE 1 TO ls_toolbar-butn_type. " Menu + opcion por defecto
@@ -500,7 +500,7 @@ FORM toolbar_alv CHANGING ps_object TYPE REF TO cl_alv_event_toolbar_set
 
 * Botón de confirmar traducciones
   CLEAR ls_toolbar.
-  MOVE dc_pprosal TO ls_toolbar-function.
+  MOVE mc_pprosal TO ls_toolbar-function.
 *  MOVE icon_transport TO ls_toolbar-icon.
 *  MOVE text-q02 TO ls_toolbar-quickinfo.
   MOVE text-q02 TO ls_toolbar-text.
@@ -519,21 +519,21 @@ FORM menu_toolbar  CHANGING ps_object TYPE REF TO cl_ctmenu
 
 * Se desplega el menú en base a la opción escogida.
   CASE ps_ucomm.
-    WHEN dc_transport.
-      ps_object->add_function( fcode = dc_transport
+    WHEN mc_transport.
+      ps_object->add_function( fcode = mc_transport
                                text = text-t01 " Transport changes
                                icon =  icon_import_transport_request ).
 
-      ps_object->add_function( fcode = dc_trans_obj
+      ps_object->add_function( fcode = mc_trans_obj
                                text = text-t02 " Selective transport
                                icon  = icon_transport_proposal
                                disabled = abap_true ).
-    WHEN dc_pprosal.
-      ps_object->add_function( fcode = dc_pprosal
+    WHEN mc_pprosal.
+      ps_object->add_function( fcode = mc_pprosal
                              text = text-t03 " Confirm all
                              icon =  icon_import_transport_request ).
 
-      ps_object->add_function( fcode = dc_ok_pprosal
+      ps_object->add_function( fcode = mc_ok_pprosal
                                text = text-f01 " Confirm proposal field
                                icon  = icon_transport_proposal ).
   ENDCASE.
@@ -546,12 +546,12 @@ ENDFORM.                    " MENU_TOOLBAR
 FORM user_command_toolbar  CHANGING ps_ucomm TYPE sy-ucomm.
 
   CASE ps_ucomm.
-    WHEN dc_transport. " Transport all objects
+    WHEN mc_transport. " Transport all objects
       PERFORM transport_mod_obj.
-    WHEN dc_trans_obj. " Selective transport
-    WHEN dc_ok_pprosal. " Confirm proposal
+    WHEN mc_trans_obj. " Selective transport
+    WHEN mc_ok_pprosal. " Confirm proposal
       PERFORM button_confirm_pprosal.
-    WHEN dc_pprosal. " Confirm all proposal
+    WHEN mc_pprosal. " Confirm all proposal
       PERFORM confirm_all_pprosal.
   ENDCASE.
 
@@ -564,9 +564,9 @@ ENDFORM.                    " USER_COMMAND_TOOLBAR
 FORM transport_mod_obj .
   DATA ls_return TYPE bapiret2.
 
-  CALL METHOD go_proces->transport_mod_obj
+  CALL METHOD mo_proces->transport_mod_obj
     IMPORTING
-      e_return = ls_return.
+      es_return = ls_return.
 
   CASE ls_return-type.
 * Los errores se muestran como informativo pero de tipo error, de esta
@@ -588,7 +588,7 @@ ENDFORM.                    " TRANSPORT
 *----------------------------------------------------------------------*
 FORM init_data .
 * Los datos no se han modificado.
-  d_datos_modif = abap_false.
+  mv_datos_modif = abap_false.
 ENDFORM.                    " INIT_DATA
 *&---------------------------------------------------------------------*
 *&      Form  CONTEXT_MENU
@@ -611,7 +611,7 @@ FORM context_menu  USING  pe_object TYPE REF TO cl_ctmenu.
                                           lt_func_std_menu_context.
 
 * Obtengo los datos de la columna donde se ha pulsado el menú contextual.
-  CALL METHOD go_alv->get_current_cell
+  CALL METHOD mo_alv->get_current_cell
     IMPORTING
       es_col_id = ls_col
       es_row_id = ls_row.
@@ -620,19 +620,19 @@ FORM context_menu  USING  pe_object TYPE REF TO cl_ctmenu.
   ld_mostrar_menu = abap_false.
 
 * El menu contextual solo se permite para las columnas dinámicas con los textos
-  IF ls_col-fieldname CS ZCL_TRANSLATE_TOOL=>dc_field_txt_lang.
+  IF ls_col-fieldname CS ZCL_TRANSLATE_TOOL=>mc_field_txt_lang.
 
 * El menú contextual saldrá
     READ TABLE <it_datos> ASSIGNING <wa> INDEX ls_row-index.
     IF sy-subrc = 0.
 
-      ASSIGN COMPONENT ZCL_TRANSLATE_TOOL=>dc_field_style OF STRUCTURE <wa> TO <field_style>.
+      ASSIGN COMPONENT ZCL_TRANSLATE_TOOL=>mc_field_style OF STRUCTURE <wa> TO <field_style>.
       IF sy-subrc = 0.
 
 * Miro el estilo es de propuesta no confirmada. Si es así se muestra el menu.
         READ TABLE <field_style> TRANSPORTING NO FIELDS
                                   WITH KEY fieldname = ls_col-fieldname
-                                           style = go_proces->dc_style_prop_wo_conf.
+                                           style = mo_proces->mc_style_prop_wo_conf.
         IF sy-subrc = 0.
           ld_mostrar_menu = abap_true.
         ENDIF.
@@ -677,7 +677,7 @@ FORM load_func_menu_context  CHANGING ps_func TYPE ui_functions
                                       ps_func_std TYPE ui_functions.
 
 * Confirmacion propuesta traduccion
-  APPEND dc_ok_pprosal TO ps_func.
+  APPEND mc_ok_pprosal TO ps_func.
 
 * Codigo estándar para que no se muestren.
   APPEND cl_gui_alv_grid=>mc_fc_col_optimize TO ps_func_std.
@@ -697,7 +697,7 @@ FORM assign_func_menu_context  USING  pe_object TYPE REF TO cl_ctmenu.
 
   CALL METHOD pe_object->add_function
     EXPORTING
-      fcode = dc_ok_pprosal
+      fcode = mc_ok_pprosal
       text  = text-f01.
 
 ENDFORM.                    " ASSIGN_FUNC_MENU_CONTEXT
@@ -714,22 +714,22 @@ FORM confirm_pprosal_field USING pe_fieldname
   FIELD-SYMBOLS <wa_field_style> TYPE LINE OF lvc_t_styl.
   DATA ld_fieldname TYPE fieldname.
 
-  ASSIGN COMPONENT ZCL_TRANSLATE_TOOL=>dc_field_style OF STRUCTURE ps_wa TO <field_style>.
+  ASSIGN COMPONENT zcl_translate_tool=>mc_field_style OF STRUCTURE ps_wa TO <field_style>.
   IF sy-subrc = 0.
 
 * Miro el estilo es de propuesta no confirmada. Si es así se cambia a confirmada
     READ TABLE <field_style> ASSIGNING <wa_field_style>
                               WITH KEY fieldname = pe_fieldname
-                                       style = go_proces->dc_style_prop_wo_conf.
+                                       style = mo_proces->mc_style_prop_wo_conf.
     IF sy-subrc = 0.
-      <wa_field_style>-style = go_proces->dc_style_text_changed.
+      <wa_field_style>-style = mo_proces->mc_style_text_changed.
 
 * Se marca que el campo ha sido modificado para que se tenga en cuenta en la grabacion.
       ld_fieldname = pe_fieldname.
 * Para actualizar el campo de control tengo que reemplazar el texto del nombre del campo
 * por el de control.
-      REPLACE go_proces->dc_field_txt_lang IN ld_fieldname
-              WITH go_proces->dc_field_ctrl_lang.
+      REPLACE mo_proces->mc_field_txt_lang IN ld_fieldname
+              WITH mo_proces->mc_field_ctrl_lang.
 
 * Actualizo el campo de control
       ASSIGN COMPONENT ld_fieldname OF STRUCTURE ps_wa TO <field>.
@@ -737,7 +737,7 @@ FORM confirm_pprosal_field USING pe_fieldname
         <field> = abap_true.
 
 * A nivel global establezco que los datos han sido modificados.
-        d_datos_modif = abap_true.
+        mv_datos_modif = abap_true.
 
       ENDIF.
 
@@ -758,7 +758,7 @@ FORM button_confirm_pprosal .
   DATA ls_row TYPE lvc_s_row.
 
 * Obtengo los datos de la columna donde se ha pulsado el menú contextual.
-  CALL METHOD go_alv->get_current_cell
+  CALL METHOD mo_alv->get_current_cell
     IMPORTING
       es_col_id = ls_col
       es_row_id = ls_row.
@@ -771,7 +771,7 @@ FORM button_confirm_pprosal .
     PERFORM confirm_pprosal_field USING ls_col-fieldname
                                   CHANGING <wa>.
 
-    CALL METHOD go_alv->refresh_table_display( EXPORTING is_stable = et_stable ).
+    CALL METHOD mo_alv->refresh_table_display( EXPORTING is_stable = ms_stable ).
 
     CALL METHOD cl_gui_cfw=>flush.
 
@@ -790,7 +790,7 @@ FORM confirm_all_pprosal .
   DATA ld_fieldname TYPE fieldname.
 
 * Recupero los idiomas de destino.
-  lt_tlang = go_proces->get_tlang( ).
+  lt_tlang = mo_proces->get_tlang( ).
 
 * Por cada registro se recorre cada columna de idioma y se llama al
 * procedimiento que acepta las propuestas por cada idioma.
@@ -798,7 +798,7 @@ FORM confirm_all_pprosal .
 
     LOOP AT lt_tlang ASSIGNING <ls_tlang>.
 
-      ld_fieldname = go_proces->get_name_field_text( <ls_tlang> ).
+      ld_fieldname = mo_proces->get_name_field_text( <ls_tlang> ).
       PERFORM confirm_pprosal_field USING ld_fieldname
                                    CHANGING <wa>.
 
@@ -806,7 +806,7 @@ FORM confirm_all_pprosal .
 
   ENDLOOP.
 
-  CALL METHOD go_alv->refresh_table_display( EXPORTING is_stable = et_stable ).
+  CALL METHOD mo_alv->refresh_table_display( EXPORTING is_stable = ms_stable ).
 
   CALL METHOD cl_gui_cfw=>flush.
 

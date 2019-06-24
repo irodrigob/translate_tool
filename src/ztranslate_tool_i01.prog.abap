@@ -16,7 +16,7 @@ ENDMODULE.                 " SALIR  INPUT
 *----------------------------------------------------------------------*
 MODULE user_command_9000 INPUT.
   DATA ld_valid TYPE sap_bool.
-  CALL METHOD go_alv->check_changed_data( IMPORTING e_valid = ld_valid ).
+  CALL METHOD mo_alv->check_changed_data( IMPORTING e_valid = ld_valid ).
   IF ld_valid = abap_true.
     CASE d_okcode.
       WHEN 'BU'.
