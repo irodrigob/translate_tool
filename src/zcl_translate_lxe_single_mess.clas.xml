@@ -4,7 +4,7 @@
   <asx:values>
    <VSEOCLASS>
     <CLSNAME>ZCL_TRANSLATE_LXE_SINGLE_MESS</CLSNAME>
-    <LANGU>S</LANGU>
+    <LANGU>E</LANGU>
     <DESCRIPT>LXE: Single messages plugin</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
