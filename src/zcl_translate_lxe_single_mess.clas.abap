@@ -42,7 +42,7 @@ CLASS zcl_translate_lxe_single_mess IMPLEMENTATION.
 
 
   METHOD get_object_text.
-    r_obj_text = 'MESS'.
+    rv_obj_text = 'MESS'.
   ENDMETHOD.
 
 

@@ -45,11 +45,11 @@ CLASS zcl_translate_lxe_program IMPLEMENTATION.
     DATA ld_obj_name TYPE e071-obj_name.
 
 * Se pasa los datos a una estructura para obtener el objeto de texto.
-    ls_ddenq-objname = i_obj_name.
-    ls_ddenq-objtype = i_object.
+    ls_ddenq-objname = iv_obj_name.
+    ls_ddenq-objtype = iv_object.
 
 * La clase para todo es PROG menos para los PFSTATUS que es CUAD
-    CASE i_object.
+    CASE iv_object.
       WHEN 'CUAD'. " PF Status
         ld_class = 'CUAD'.
       WHEN OTHERS.
@@ -64,7 +64,7 @@ CLASS zcl_translate_lxe_program IMPLEMENTATION.
                                           ld_obj_name.
 
 * Tipo de objeto de texto del objeto pasado.
-    r_obj_text = ld_objtyp.
+    rv_obj_text = ld_objtyp.
 
   ENDMETHOD.
 

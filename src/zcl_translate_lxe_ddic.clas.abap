@@ -48,8 +48,8 @@ CLASS zcl_translate_lxe_ddic IMPLEMENTATION.
     DATA ld_obj_name TYPE e071-obj_name.
 
 * Se pasa los datos a una estructura para obtener el objeto de texto.
-    ls_ddenq-objname = i_obj_name.
-    ls_ddenq-objtype = i_object.
+    ls_ddenq-objname = iv_obj_name.
+    ls_ddenq-objtype = iv_object.
 
 
     PERFORM determine_lock_key IN PROGRAM saplseuq USING    space
@@ -60,7 +60,7 @@ CLASS zcl_translate_lxe_ddic IMPLEMENTATION.
                                           ld_obj_name.
 
 * Tipo de objeto de texto del objeto pasado.
-    r_obj_text = ld_objtyp.
+    rv_obj_text = ld_objtyp.
 
   ENDMETHOD.
 

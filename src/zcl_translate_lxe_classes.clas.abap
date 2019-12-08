@@ -40,13 +40,13 @@ method GET_OBJECT_TEXT.
 
   PERFORM determine_lock_key IN PROGRAM SAPLSEUQ USING    space
                                         'TEXT'
-                                        i_obj_name
+                                        iv_obj_name
                                CHANGING ld_pgmid
                                         ld_objtyp
                                         ld_obj_name.
 
 * Tipo de objeto de texto del objeto pasado.
-  r_obj_text = ld_objtyp.
+  rv_obj_text = ld_objtyp.
 
 endmethod.
 

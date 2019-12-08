@@ -80,64 +80,64 @@ CLASS zcl_translate_lxe DEFINITION
 *"* protected components of class ZCL_TRANSLATE_LXE
 *"* do not include other source files here!!!
     TYPES:
-      BEGIN OF ty_proposal.
+      BEGIN OF ts_proposal.
         INCLUDE TYPE lxe_pcx_s2.
     TYPES: objtype TYPE lxeobjtype,
-           END OF ty_proposal .
+           END OF ts_proposal .
     TYPES:
-      ty_t_proposal TYPE STANDARD TABLE OF ty_proposal .
+      tt_proposal TYPE STANDARD TABLE OF ts_proposal .
     TYPES:
-      ty_t_colob TYPE STANDARD TABLE OF lxe_colob .
+      tt_colob TYPE STANDARD TABLE OF lxe_colob .
     TYPES:
-      ty_t_pcx_s1 TYPE STANDARD TABLE OF lxe_pcx_s1 .
+      tt_pcx_s1 TYPE STANDARD TABLE OF lxe_pcx_s1 .
     TYPES:
-      ty_t_pcx_s2 TYPE STANDARD TABLE OF lxe_pcx_s2 .
+      tt_pcx_s2 TYPE STANDARD TABLE OF lxe_pcx_s2 .
 
-    CONSTANTS dc_status_proposal TYPE lxepp_stat VALUE 09.  "#EC NOTEXT
-    DATA d_object_text TYPE trobjtype .
-    DATA d_object TYPE trobjtype .
-    DATA d_obj_name TYPE sobj_name .
-    DATA d_olang TYPE lxeisolang .
-    DATA d_tlang TYPE lxeisolang .
-    DATA it_texts TYPE tt_texts .
-    DATA it_proposal TYPE ty_t_proposal .
-    DATA it_proposal_best TYPE ty_t_proposal .
-    DATA it_colob TYPE ty_t_colob .
-    DATA et_info_object_old TYPE lxe_colob .
-    DATA d_masterlang TYPE lxeisolang .
+    CONSTANTS cv_status_proposal TYPE lxepp_stat VALUE 09.  "#EC NOTEXT
+    DATA mv_object_text TYPE trobjtype .
+    DATA mv_object TYPE trobjtype .
+    DATA mv_obj_name TYPE sobj_name .
+    DATA mv_olang TYPE lxeisolang .
+    DATA mv_tlang TYPE lxeisolang .
+    DATA mt_texts TYPE tt_texts .
+    DATA mt_proposal TYPE tt_proposal .
+    DATA mt_proposal_best TYPE tt_proposal .
+    DATA mt_colob TYPE tt_colob .
+    DATA ms_info_object_old TYPE lxe_colob .
+    DATA mv_masterlang TYPE lxeisolang .
 
     METHODS get_masterlang .
     METHODS read_proposal
       IMPORTING
-        !i_t_pcx_s1      TYPE ty_t_pcx_s1
-        !i_colob         TYPE lxe_colob
+        !it_pcx_s1      TYPE tt_pcx_s1
+        !is_colob         TYPE lxe_colob
       EXPORTING
-        !e_best_proposal TYPE ty_t_pcx_s2
-        !e_proposal      TYPE ty_t_pcx_s2 .
+        !et_best_proposal TYPE tt_pcx_s2
+        !et_proposal      TYPE tt_pcx_s2 .
     METHODS pp_create_hash
       IMPORTING
-        !i_language TYPE lxeisolang
-        !i_text     TYPE lxeunitlin
+        !iv_language TYPE lxeisolang
+        !iv_text     TYPE lxeunitlin
       EXPORTING
-        !e_hash     TYPE lxe_pphash
-        !e_enqueue  TYPE sap_bool
+        !ev_hash     TYPE lxe_pphash
+        !ev_enqueue  TYPE sap_bool
       CHANGING
-        !c_pstatus  TYPE lxestatprc .
+        !cv_pstatus  TYPE lxestatprc .
     METHODS get_object_text
       IMPORTING
-        !i_object         TYPE trobjtype
-        !i_obj_name       TYPE sobj_name
+        !iv_object         TYPE trobjtype
+        !iv_obj_name       TYPE sobj_name
       RETURNING
-        VALUE(r_obj_text) TYPE trobjtype .
+        VALUE(rv_obj_text) TYPE trobjtype .
     METHODS load_proposal .
     METHODS save_proposal
       IMPORTING
-        !i_colob TYPE lxe_colob .
+        !is_colob TYPE lxe_colob .
     METHODS read_single_text
       IMPORTING
-        !i_colob TYPE lxe_colob
+        !is_colob TYPE lxe_colob
       EXPORTING
-        !e_text  TYPE ty_t_pcx_s1 .
+        !et_text  TYPE tt_pcx_s1 .
   PRIVATE SECTION.
 *"* private components of class ZCL_TRANSLATE_LXE
 *"* do not include other source files here!!!
@@ -149,11 +149,11 @@ CLASS zcl_translate_lxe IMPLEMENTATION.
 
 
   METHOD get_best_text_proposal.
-    FIELD-SYMBOLS <ls_proposal> TYPE LINE OF ty_t_proposal.
+    FIELD-SYMBOLS <ls_proposal> TYPE LINE OF tt_proposal.
 
     CLEAR ev_best_text.
 
-    READ TABLE it_proposal_best ASSIGNING <ls_proposal>
+    READ TABLE mt_proposal_best ASSIGNING <ls_proposal>
          WITH KEY textkey = iv_textkey
                   objtype = iv_objtype.
     IF sy-subrc = 0.
@@ -213,19 +213,19 @@ CLASS zcl_translate_lxe IMPLEMENTATION.
     DATA ld_masterlang TYPE masterlang.
 
 * Cambio el tipo de objeto cuando es necesario.
-    CASE d_object.
+    CASE mv_object.
       WHEN 'CUAD'. " PF-Status
         ld_object = 'PROG'. " El idioma será el del programa original.
       WHEN 'MESS'. " Mensaje
         ld_object = 'MSAG'. " será el de la clase de mensajes.
       WHEN OTHERS.
-        ld_object = d_object.
+        ld_object = mv_object.
     ENDCASE.
 
 * Para el nombre del programa elimino partes identificadoras
-    ld_obj_name = d_obj_name.
+    ld_obj_name = mv_obj_name.
 
-    CASE d_object.
+    CASE mv_object.
       WHEN 'FUGR'.
 * Funciones y pools de subrutinas
         REPLACE ALL OCCURRENCES OF 'SAPL' IN ld_obj_name WITH space.
@@ -238,14 +238,14 @@ CLASS zcl_translate_lxe IMPLEMENTATION.
       WHEN 'MESS'.
 * Pongo el primer digito ya que en el DO no se tiene en cuenta. Y al menos
 * siempre tendrá un digito la clase de mensajes.
-        ld_obj_name = d_obj_name(1).
+        ld_obj_name = mv_obj_name(1).
 * Me quedo con el nombre. al primer espacio significa que luego vendrá el numero de mensaje y en ese
 * momento salgo del bucle.
         DO.
-          IF d_obj_name+sy-index(1) = space.
+          IF mv_obj_name+sy-index(1) = space.
             EXIT.
           ELSE.
-            ld_obj_name+sy-index(1) = d_obj_name+sy-index(1).
+            ld_obj_name+sy-index(1) = mv_obj_name+sy-index(1).
           ENDIF.
         ENDDO.
     ENDCASE.
@@ -261,10 +261,10 @@ CLASS zcl_translate_lxe IMPLEMENTATION.
         EXPORTING
           r3_lang    = ld_masterlang
         IMPORTING
-          o_language = d_masterlang.
+          o_language = mv_masterlang.
     ELSE.
 * Si no encuentro el idioma maestro pongo que es el idioma de origen.
-      d_masterlang = d_olang.
+      mv_masterlang = mv_olang.
     ENDIF.
 
   ENDMETHOD.
@@ -314,7 +314,7 @@ CLASS zcl_translate_lxe IMPLEMENTATION.
 
 
   METHOD get_texts.
-    et_texts = it_texts.
+    et_texts = mt_texts.
   ENDMETHOD.
 
 
@@ -323,10 +323,10 @@ CLASS zcl_translate_lxe IMPLEMENTATION.
 
 
   METHOD is_text_in_proposal.
-    FIELD-SYMBOLS <ls_proposal> TYPE LINE OF ty_t_proposal.
+    FIELD-SYMBOLS <ls_proposal> TYPE LINE OF tt_proposal.
     rv_exist = abap_false.
 
-    READ TABLE it_proposal ASSIGNING <ls_proposal> WITH KEY textkey = iv_textkey
+    READ TABLE mt_proposal ASSIGNING <ls_proposal> WITH KEY textkey = iv_textkey
                                                             objtype = iv_objtype
                                                             best_prop = iv_text.
     IF sy-subrc = 0.
@@ -438,19 +438,19 @@ CLASS zcl_translate_lxe IMPLEMENTATION.
   METHOD load_text.
     FIELD-SYMBOLS <ls_colob> TYPE lxe_colob.
     FIELD-SYMBOLS <ls_lxe_texts> TYPE lxe_pcx_s1.
-    FIELD-SYMBOLS <ls_pcx_s2> TYPE LINE OF ty_t_pcx_s2.
+    FIELD-SYMBOLS <ls_pcx_s2> TYPE LINE OF tt_pcx_s2.
     DATA lt_lxe_texts TYPE STANDARD TABLE OF lxe_pcx_s1.
     DATA ls_texts TYPE LINE OF tt_texts.
-    DATA lt_best_pcx_s2 TYPE ty_t_pcx_s2.
-    DATA lt_pcx_s2 TYPE ty_t_pcx_s2.
-    DATA ls_proposal TYPE LINE OF ty_t_proposal.
+    DATA lt_best_pcx_s2 TYPE tt_pcx_s2.
+    DATA lt_pcx_s2 TYPE tt_pcx_s2.
+    DATA ls_proposal TYPE LINE OF tt_proposal.
 
-    CLEAR: it_texts, it_proposal, it_proposal_best.
+    CLEAR: mt_texts, mt_proposal, mt_proposal_best.
 
 * Un objeto puede tener tipos de textos a traducir.
-    LOOP AT it_colob ASSIGNING <ls_colob>.
+    LOOP AT mt_colob ASSIGNING <ls_colob>.
 
-* Se convierte, para objetos antiguos, el objeto a traducic.r
+* Se convierte, para objetos antiguos, el objeto a traducir
       CALL FUNCTION 'LXE_OBJ_CONVERT_OL_WLB'
         EXPORTING
           in_custmnr = <ls_colob>-custmnr
@@ -465,15 +465,15 @@ CLASS zcl_translate_lxe IMPLEMENTATION.
 * del objeto
       CALL METHOD read_single_text
         EXPORTING
-          i_colob = <ls_colob>
+          is_colob = <ls_colob>
         IMPORTING
-          e_text  = lt_lxe_texts.
+          et_text  = lt_lxe_texts.
 
 * Paso los textos leídos de SAP a la tabla general.
       LOOP AT lt_lxe_texts ASSIGNING <ls_lxe_texts>.
         MOVE-CORRESPONDING <ls_lxe_texts> TO ls_texts.
         ls_texts-objtype = <ls_colob>-objtype.
-        APPEND ls_texts TO it_texts.
+        APPEND ls_texts TO mt_texts.
         CLEAR ls_texts.
       ENDLOOP.
       IF sy-subrc = 0.
@@ -481,23 +481,23 @@ CLASS zcl_translate_lxe IMPLEMENTATION.
 * Leo la propuestas de los textos obtenidos
         CALL METHOD read_proposal
           EXPORTING
-            i_t_pcx_s1      = lt_lxe_texts
-            i_colob         = <ls_colob>
+            it_pcx_s1      = lt_lxe_texts
+            is_colob         = <ls_colob>
           IMPORTING
-            e_best_proposal = lt_best_pcx_s2
-            e_proposal      = lt_pcx_s2.
+            et_best_proposal = lt_best_pcx_s2
+            et_proposal      = lt_pcx_s2.
 
 * Se añaden las propuestas a las tablas globales.
         LOOP AT lt_best_pcx_s2 ASSIGNING <ls_pcx_s2>.
           MOVE-CORRESPONDING <ls_pcx_s2> TO ls_proposal.
           ls_proposal-objtype = <ls_colob>-objtype.
-          APPEND ls_proposal TO it_proposal_best.
+          APPEND ls_proposal TO mt_proposal_best.
           CLEAR ls_proposal.
         ENDLOOP.
         LOOP AT lt_pcx_s2 ASSIGNING <ls_pcx_s2>.
           MOVE-CORRESPONDING <ls_pcx_s2> TO ls_proposal.
           ls_proposal-objtype = <ls_colob>-objtype.
-          APPEND ls_proposal TO it_proposal.
+          APPEND ls_proposal TO mt_proposal.
           CLEAR ls_proposal.
         ENDLOOP.
       ENDIF.
@@ -510,45 +510,45 @@ CLASS zcl_translate_lxe IMPLEMENTATION.
 
 
   METHOD pp_create_hash.
-    CLEAR: e_hash.
-    e_enqueue = abap_false.
-    c_pstatus = 'S'. " Ok
+    CLEAR: ev_hash.
+    ev_enqueue = abap_false.
+    cv_pstatus = 'S'. " Ok
 
     CALL FUNCTION 'LXE_PP1_HASH_CREATE'
       EXPORTING
-        language       = i_language
-        text           = i_text
+        language       = iv_language
+        text           = iv_text
         insert_db      = 'X'
       IMPORTING
-        hash           = e_hash
-        enq_commit     = e_enqueue
+        hash           = ev_hash
+        enq_commit     = ev_enqueue
       EXCEPTIONS
         internal_error = 1
         OTHERS         = 2.
     IF sy-subrc NE 0.
-      c_pstatus = 'F'.
+      cv_pstatus = 'F'.
     ELSE.
-      IF e_enqueue = abap_true.
+      IF ev_enqueue = abap_true.
         COMMIT WORK.
       ELSE.
         CALL FUNCTION 'ENQUEUE_E_LXETXT'
           EXPORTING
             mode_lxetxt0020 = 'E'
-            language        = e_hash-language
-            hash_1          = e_hash-hash_1
-            hash_2          = e_hash-hash_2
-            hash_3          = e_hash-hash_3
-            hash_4          = e_hash-hash_4
-            hash_5          = e_hash-hash_5
+            language        = ev_hash-language
+            hash_1          = ev_hash-hash_1
+            hash_2          = ev_hash-hash_2
+            hash_3          = ev_hash-hash_3
+            hash_4          = ev_hash-hash_4
+            hash_5          = ev_hash-hash_5
             _wait           = 'X'
           EXCEPTIONS
             foreign_lock    = 1
             system_failure  = 2
             OTHERS          = 3.
         IF sy-subrc <> 0.
-          c_pstatus = 'F'.
+          cv_pstatus = 'F'.
         ELSE.
-          e_enqueue = 'X'.
+          ev_enqueue = 'X'.
         ENDIF.
       ENDIF.
     ENDIF.
@@ -563,7 +563,7 @@ CLASS zcl_translate_lxe IMPLEMENTATION.
     DATA ld_domatyp TYPE lxedomatyp .
     DATA ld_domanam TYPE lxedomanam .
     DATA ld_status TYPE lxestatprc.
-    DATA ls_proposal TYPE LINE OF ty_t_proposal.
+    DATA ls_proposal TYPE LINE OF tt_proposal.
     DATA ld_ohash TYPE lxe_pphash.
     DATA ld_thash TYPE lxe_pphash.
     DATA lt_pp TYPE STANDARD TABLE OF lxe_pp___1.
@@ -571,17 +571,17 @@ CLASS zcl_translate_lxe IMPLEMENTATION.
     DATA ls_hash TYPE lxe_pphash.
 
 
-    CLEAR: e_best_proposal, e_proposal.
+    CLEAR: et_best_proposal, et_proposal.
 
 * Los textos tienen que estar para poder leer la propuesta.
-    IF i_t_pcx_s1 IS NOT INITIAL.
+    IF it_pcx_s1 IS NOT INITIAL.
 
 * Leo los atributos del objeto para obtener la propuesta.
       CALL FUNCTION 'LXE_OBJ_GET_TECH_INFO'
         EXPORTING
-          custmnr       = i_colob-custmnr
-          objtype       = i_colob-objtype
-          objname       = i_colob-objname
+          custmnr       = is_colob-custmnr
+          objtype       = is_colob-objtype
+          objname       = is_colob-objname
           bypass_buffer = 'X'
         IMPORTING
           domatyp       = ld_domatyp
@@ -590,27 +590,27 @@ CLASS zcl_translate_lxe IMPLEMENTATION.
 * Obtengo la mejor propuesta de los textos.
       CALL FUNCTION 'LXE_PP1_PROPOSALS_GET'
         EXPORTING
-          s_lang   = d_olang
-          t_lang   = d_tlang
-          custmnr  = i_colob-custmnr
-          objtype  = i_colob-objtype
+          s_lang   = mv_olang
+          t_lang   = mv_tlang
+          custmnr  = is_colob-custmnr
+          objtype  = is_colob-objtype
           domatyp  = ld_domatyp
           domanam  = ld_domanam
         IMPORTING
           pstatus  = ld_status
         TABLES
-          t_pcx_s1 = i_t_pcx_s1[]
-          t_pcx_s2 = e_best_proposal[].
+          t_pcx_s1 = it_pcx_s1[]
+          t_pcx_s2 = et_best_proposal[].
 
 * De cada texto obtengo sus propuestas. No hay una funcion que sea como la anterior que
 * devuelva todas las propuestas bien formateadas. Por ello, tengo que replicarlo como hace SAP
 * pero ajustando a la tabla de mejores propuestas.
-      LOOP AT i_t_pcx_s1 ASSIGNING <ls_texts>.
+      LOOP AT it_pcx_s1 ASSIGNING <ls_texts>.
         CLEAR lt_pp.
 
         CALL FUNCTION 'LXE_PP1_HASH_CREATE'
           EXPORTING
-            language       = d_olang
+            language       = mv_olang
             text           = <ls_texts>-s_text
           IMPORTING
             hash           = ld_ohash
@@ -620,8 +620,8 @@ CLASS zcl_translate_lxe IMPLEMENTATION.
 
         CALL FUNCTION 'LXE_PP1_PP_READ_DB_APPLIC'
           EXPORTING
-            s_lang         = d_olang
-            t_lang         = d_tlang
+            s_lang         = mv_olang
+            t_lang         = mv_tlang
             domatyp        = '*'
             domanam        = '* '
             hash           = ld_ohash
@@ -638,7 +638,7 @@ CLASS zcl_translate_lxe IMPLEMENTATION.
           ls_proposal-textkey = <ls_texts>-textkey.
           ls_proposal-cnt_prop = <ls_pp>-var_cnt.
 
-          ls_hash-language = d_tlang.
+          ls_hash-language = mv_tlang.
           ls_hash-hash_1 = <ls_pp>-t_hash_1.
           ls_hash-hash_2 = <ls_pp>-t_hash_2.
           ls_hash-hash_3 = <ls_pp>-t_hash_3.
@@ -656,7 +656,7 @@ CLASS zcl_translate_lxe IMPLEMENTATION.
               OTHERS    = 2.
 
           IF sy-subrc = 0.
-            APPEND ls_proposal TO e_proposal.
+            APPEND ls_proposal TO et_proposal.
             CLEAR ls_proposal.
           ENDIF.
         ENDLOOP.
@@ -668,37 +668,37 @@ CLASS zcl_translate_lxe IMPLEMENTATION.
 
 
   METHOD read_single_text.
-    FIELD-SYMBOLS <ls_text> TYPE LINE OF ty_t_pcx_s1.
-    CLEAR e_text.
+    FIELD-SYMBOLS <ls_text> TYPE LINE OF tt_pcx_s1.
+    CLEAR et_text.
 
 * Se llama a la función que cubre el 80% o de traducciones. Para objetos
 * especificos se sobrecarga el método y se cambia.
     CALL FUNCTION 'LXE_OBJ_TEXT_PAIR_READ'
       EXPORTING
-        t_lang    = d_tlang
-        s_lang    = d_olang
-        custmnr   = i_colob-custmnr
-        objtype   = i_colob-objtype
-        objname   = i_colob-objname
+        t_lang    = mv_tlang
+        s_lang    = mv_olang
+        custmnr   = is_colob-custmnr
+        objtype   = is_colob-objtype
+        objname   = is_colob-objname
         read_only = space
       TABLES
-        lt_pcx_s1 = e_text[].
+        lt_pcx_s1 = et_text[].
 
 * Si E_TEXT esta en blanco significa que el objeto no esta traducido. Por lo que los leo del idioma maestro del
 * objeto, y limpio el texto de destino que sera el mismo que el de origen. De esta manera, se podra traducir.
-    IF e_text IS INITIAL.
+    IF et_text IS INITIAL.
       CALL FUNCTION 'LXE_OBJ_TEXT_PAIR_READ'
         EXPORTING
-          t_lang    = d_masterlang
-          s_lang    = d_masterlang
-          custmnr   = i_colob-custmnr
-          objtype   = i_colob-objtype
-          objname   = i_colob-objname
+          t_lang    = mv_masterlang
+          s_lang    = mv_masterlang
+          custmnr   = is_colob-custmnr
+          objtype   = is_colob-objtype
+          objname   = is_colob-objname
           read_only = space
         TABLES
-          lt_pcx_s1 = e_text[].
+          lt_pcx_s1 = et_text[].
 
-      LOOP AT e_text ASSIGNING <ls_text>.
+      LOOP AT et_text ASSIGNING <ls_text>.
         CLEAR <ls_text>-t_text.
       ENDLOOP.
     ENDIF.
@@ -707,23 +707,23 @@ CLASS zcl_translate_lxe IMPLEMENTATION.
 
 
   METHOD save_proposal.
-    FIELD-SYMBOLS <ls_texts> LIKE LINE OF it_texts.
+    FIELD-SYMBOLS <ls_texts> LIKE LINE OF mt_texts.
     DATA ld_pstatus TYPE lxestatprc.
     DATA ls_t_hash TYPE lxe_pphash.
     DATA ld_t_enq TYPE c.
     DATA ls_s_hash TYPE lxe_pphash.
     DATA ld_s_enq TYPE c.
     DATA ld_enq TYPE c.
-    DATA ls_proposal TYPE LINE OF ty_t_proposal.
+    DATA ls_proposal TYPE LINE OF tt_proposal.
     DATA ld_domatyp TYPE lxedomatyp .
     DATA ld_domanam TYPE lxedomanam .
 
 * Solo se graban como propuestas aquellos textos que no existen
 * en la tabla de propuestas
-    LOOP AT it_texts ASSIGNING <ls_texts> WHERE t_text IS NOT INITIAL
-                                                AND objtype = i_colob-objtype.
+    LOOP AT mt_texts ASSIGNING <ls_texts> WHERE t_text IS NOT INITIAL
+                                                AND objtype = is_colob-objtype.
 
-      READ TABLE it_proposal TRANSPORTING NO FIELDS WITH KEY textkey = <ls_texts>-textkey
+      READ TABLE mt_proposal TRANSPORTING NO FIELDS WITH KEY textkey = <ls_texts>-textkey
                                                              objtype = <ls_texts>-objtype
                                                               best_prop = <ls_texts>-t_text.
       IF sy-subrc NE 0.
@@ -732,15 +732,15 @@ CLASS zcl_translate_lxe IMPLEMENTATION.
         ls_proposal-textkey = <ls_texts>-textkey.
         ls_proposal-objtype = <ls_texts>-objtype.
         ls_proposal-best_prop = <ls_texts>-t_text.
-        ls_proposal-status = dc_status_proposal.
-        APPEND ls_proposal TO it_proposal.
+        ls_proposal-status = cv_status_proposal.
+        APPEND ls_proposal TO mt_proposal.
 
 * Leo los atributos del objeto para poder grabar la propuesta de texto
         CALL FUNCTION 'LXE_OBJ_GET_TECH_INFO'
           EXPORTING
-            custmnr       = i_colob-custmnr
-            objtype       = i_colob-objtype
-            objname       = i_colob-objname
+            custmnr       = is_colob-custmnr
+            objtype       = is_colob-objtype
+            objname       = is_colob-objname
             bypass_buffer = 'X'
           IMPORTING
             domatyp       = ld_domatyp
@@ -751,13 +751,13 @@ CLASS zcl_translate_lxe IMPLEMENTATION.
 * Se crea el HASH en base de datos del texto destino.
         CALL METHOD pp_create_hash
           EXPORTING
-            i_language = d_tlang
-            i_text     = <ls_texts>-t_text
+            iv_language = mv_tlang
+            iv_text     = <ls_texts>-t_text
           IMPORTING
-            e_hash     = ls_t_hash
-            e_enqueue  = ld_t_enq
+            ev_hash     = ls_t_hash
+            ev_enqueue  = ld_t_enq
           CHANGING
-            c_pstatus  = ld_pstatus.
+            cv_pstatus  = ld_pstatus.
 
 
         IF ld_pstatus = 'S'. " Si todo correcto se continua el proceso.
@@ -765,25 +765,25 @@ CLASS zcl_translate_lxe IMPLEMENTATION.
 * Lo mismo para el texto de origen
           CALL METHOD pp_create_hash
             EXPORTING
-              i_language = d_olang
-              i_text     = <ls_texts>-s_text
+              iv_language = mv_olang
+              iv_text     = <ls_texts>-s_text
             IMPORTING
-              e_hash     = ls_s_hash
-              e_enqueue  = ld_s_enq
+              ev_hash     = ls_s_hash
+              ev_enqueue  = ld_s_enq
             CHANGING
-              c_pstatus  = ld_pstatus.
+              cv_pstatus  = ld_pstatus.
 
           IF ld_pstatus = 'S'. " Si todo correcto se continua.
 * Finalmente se crea la propuesta con el status '09'.
             CALL FUNCTION 'LXE_PP1_APPLIC_CREATE'
               EXPORTING
-                t_lang         = d_tlang
-                s_lang         = d_olang
+                t_lang         = mv_tlang
+                s_lang         = mv_olang
                 domatyp        = ld_domatyp
                 domanam        = ld_domanam
                 s_hash         = ls_s_hash
                 t_hash         = ls_t_hash
-                status         = dc_status_proposal
+                status         = cv_status_proposal
               IMPORTING
                 enq_commit     = ld_enq
               EXCEPTIONS
@@ -793,8 +793,8 @@ CLASS zcl_translate_lxe IMPLEMENTATION.
               COMMIT WORK.
               CALL FUNCTION 'DEQUEUE_E_LXE_PP'
                 EXPORTING
-                  t_lang   = d_tlang
-                  s_lang   = d_olang
+                  t_lang   = mv_tlang
+                  s_lang   = mv_olang
                   s_hash_1 = ls_s_hash-hash_1
                   s_hash_2 = ls_s_hash-hash_2
                   s_hash_3 = ls_s_hash-hash_3
@@ -843,10 +843,10 @@ CLASS zcl_translate_lxe IMPLEMENTATION.
 * La tabla de textos principal contiene todos los posibles
 * textos que puede tener un objeto. Para poder grabar hay
 * hacerlo por cada tipo. Por eso hay que separalos.
-    LOOP AT it_colob ASSIGNING <ls_colob>.
+    LOOP AT mt_colob ASSIGNING <ls_colob>.
 
       CLEAR lt_lxe_texts.
-      LOOP AT it_texts ASSIGNING <ls_texts> WHERE objtype = <ls_colob>-objtype.
+      LOOP AT mt_texts ASSIGNING <ls_texts> WHERE objtype = <ls_colob>-objtype.
         MOVE-CORRESPONDING <ls_texts> TO ls_lxe_texts.
         APPEND ls_lxe_texts TO lt_lxe_texts.
       ENDLOOP.
@@ -854,12 +854,12 @@ CLASS zcl_translate_lxe IMPLEMENTATION.
 
 * Antes de grabar hay que leer de nuevo los objetos para que se carguen tablas intermedias
 * del grupo de funciones estándar.
-        read_single_text( i_colob = <ls_colob> ).
+        read_single_text( is_colob = <ls_colob> ).
 
         CALL FUNCTION 'LXE_OBJ_TEXT_PAIR_WRITE'
           EXPORTING
-            t_lang    = d_tlang
-            s_lang    = d_olang
+            t_lang    = mv_tlang
+            s_lang    = mv_olang
             custmnr   = <ls_colob>-custmnr
             objtype   = <ls_colob>-objtype
             objname   = <ls_colob>-objname
@@ -873,7 +873,7 @@ CLASS zcl_translate_lxe IMPLEMENTATION.
         ENDIF.
 
 * Se graban las propuestas
-        save_proposal( i_colob = <ls_colob> ).
+        save_proposal( is_colob = <ls_colob> ).
 
       ENDIF.
     ENDLOOP.
@@ -888,17 +888,17 @@ CLASS zcl_translate_lxe IMPLEMENTATION.
     DATA lt_e071k_text TYPE tr_keys .
 
 * Guardo los parametros pasados a variables globales.
-    d_object = iv_object.
-    d_obj_name = iv_obj_name.
-    d_olang = iv_olang.
-    d_tlang = iv_tlang.
+    mv_object = iv_object.
+    mv_obj_name = iv_obj_name.
+    mv_olang = iv_olang.
+    mv_tlang = iv_tlang.
 
-    d_object_text = get_object_text( i_object = iv_object
-                                   i_obj_name = iv_obj_name ).
+    mv_object_text = get_object_text( iv_object = iv_object
+                                   iv_obj_name = iv_obj_name ).
 
 * Si no se puede determinar el tipo de objeto del texto se lanza una
 * excepcion.
-    IF d_object_text IS NOT INITIAL.
+    IF mv_object_text IS NOT INITIAL.
 
 * Obtengo el idioma original del objeto. Se usará cuando no hay textos en el idioma de origen.
       get_masterlang( ).
@@ -906,7 +906,7 @@ CLASS zcl_translate_lxe IMPLEMENTATION.
 * Se rellena una tabla interna (e071 la que contiene los objetos en las tareas) para poder la
 * informacion para el transporte
       ls_e071-pgmid = 'LIMU'.
-      ls_e071-object = d_object_text.
+      ls_e071-object = mv_object_text.
       ls_e071-obj_name = iv_obj_name.
       APPEND ls_e071 TO lt_e071_text.
 
@@ -915,9 +915,9 @@ CLASS zcl_translate_lxe IMPLEMENTATION.
         TABLES
           in_e071  = lt_e071_text
           in_e071k = lt_e071k_text
-          ex_colob = it_colob.
+          ex_colob = mt_colob.
 
-      IF it_colob IS INITIAL.
+      IF mt_colob IS INITIAL.
         RAISE object_not_valid.
       ENDIF.
 
@@ -931,7 +931,7 @@ CLASS zcl_translate_lxe IMPLEMENTATION.
   METHOD set_text.
     FIELD-SYMBOLS <ls_texts> TYPE LINE OF tt_texts.
 
-    READ TABLE it_texts ASSIGNING <ls_texts> WITH KEY textkey = iv_id_text
+    READ TABLE mt_texts ASSIGNING <ls_texts> WITH KEY textkey = iv_id_text
                                                       objtype = iv_objtype.
     IF sy-subrc = 0.
       <ls_texts>-t_text = iv_text.
@@ -953,7 +953,7 @@ CLASS zcl_translate_lxe IMPLEMENTATION.
 * para ponerlo en la orden.
     CALL FUNCTION 'LXE_T002_CHECK_LANGUAGE'
       EXPORTING
-        language           = d_tlang
+        language           = mv_tlang
       IMPORTING
         o_r3_lang          = ld_lang
       EXCEPTIONS
@@ -961,7 +961,7 @@ CLASS zcl_translate_lxe IMPLEMENTATION.
         unknown            = 2
         OTHERS             = 3.
 
-    LOOP AT it_colob ASSIGNING <ls_colob>.
+    LOOP AT mt_colob ASSIGNING <ls_colob>.
 
 * Llamo a la funcion que pasandole el objeto me genera las entradas en las tablas
 * E071 y E071K para pasarla a la orden de transporte.

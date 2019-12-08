@@ -36,7 +36,7 @@ CLASS zcl_translate_tool DEFINITION
         !iv_depth_refs TYPE i DEFAULT 2 .
     METHODS get_data
       RETURNING
-        VALUE(r_data) TYPE REF TO data .
+        VALUE(ro_data) TYPE REF TO data .
     METHODS set_data
       IMPORTING
         !it_data TYPE REF TO data .
@@ -584,7 +584,7 @@ CLASS zcl_translate_tool IMPLEMENTATION.
 
 
   METHOD get_data.
-    r_data = mo_it_data.
+    ro_data = mo_it_data.
   ENDMETHOD.
 
 

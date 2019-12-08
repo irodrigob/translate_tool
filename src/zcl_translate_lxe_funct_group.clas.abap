@@ -36,7 +36,7 @@ CLASS zcl_translate_lxe_funct_group IMPLEMENTATION.
 
   METHOD get_object_text.
 * Tipo de objeto de texto del objeto pasado.
-    r_obj_text = 'REPT'.
+    rv_obj_text = 'REPT'.
   ENDMETHOD.
 
 

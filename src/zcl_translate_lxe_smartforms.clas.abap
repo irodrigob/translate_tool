@@ -75,16 +75,16 @@ CLASS zcl_translate_lxe_smartforms IMPLEMENTATION.
     DATA ld_lxe_objname TYPE lxeobjname.
 
 * Guardo los parametros pasados a variables globales.
-    d_object = iv_object.
-    d_obj_name = iv_obj_name.
-    d_olang = iv_olang.
-    d_tlang = iv_tlang.
+    mv_object = iv_object.
+    mv_obj_name = iv_obj_name.
+    mv_olang = iv_olang.
+    mv_tlang = iv_tlang.
 
 * Para recuperar el texto hay que pasar el idioma en R/3, por eso se realiza
 * la conversion de los dos idiomas.
     CALL FUNCTION 'LXE_T002_CHECK_LANGUAGE'
       EXPORTING
-        language           = d_olang
+        language           = mv_olang
       IMPORTING
         o_r3_lang          = mv_olang_r3
       EXCEPTIONS
@@ -94,7 +94,7 @@ CLASS zcl_translate_lxe_smartforms IMPLEMENTATION.
 
     CALL FUNCTION 'LXE_T002_CHECK_LANGUAGE'
       EXPORTING
-        language           = d_tlang
+        language           = mv_tlang
       IMPORTING
         o_r3_lang          = mv_tlang_r3
       EXCEPTIONS
@@ -128,14 +128,14 @@ CLASS zcl_translate_lxe_smartforms IMPLEMENTATION.
       IMPORTING
         objname    = ls_colob-objname.
     ls_colob-objtype = mv_objtype.
-    APPEND ls_colob TO it_colob.
+    APPEND ls_colob TO mt_colob.
 
 
 * Relleno la estructura del objeto a traducir que se usará
 * tanto para leer como para grabar.
     ms_lwrkobj-targetlang = mv_tlang_r3.
     ms_lwrkobj-objtype = mv_objtype.
-    ms_lwrkobj-objname = d_obj_name.
+    ms_lwrkobj-objname = mv_obj_name.
 
   ENDMETHOD.
 ENDCLASS.
