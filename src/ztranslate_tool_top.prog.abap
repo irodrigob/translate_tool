@@ -29,7 +29,7 @@ CONSTANTS mc_trans_obj TYPE ui_func VALUE 'TRANS_OBJ'.
 *----------------------------------------------------------------------*
 * Variables
 *----------------------------------------------------------------------*
-DATA mo_proces TYPE REF TO ZCL_TRANSLATE_TOOL. " Clase que gestiona el proceso
+DATA mo_proces TYPE REF TO zcl_spt_translate_tool. " Clase que gestiona el proceso
 DATA mo_it_data TYPE REF TO data. " Tabla interna con los datos.
 FIELD-SYMBOLS <it_datos> TYPE table. " Puntero a la tabla interna de datos
 DATA mv_datos_modif TYPE sap_bool. " Controla si los datos han cambiado.

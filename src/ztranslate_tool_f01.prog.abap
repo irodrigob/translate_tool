@@ -620,13 +620,13 @@ FORM context_menu  USING  pe_object TYPE REF TO cl_ctmenu.
   ld_mostrar_menu = abap_false.
 
 * El menu contextual solo se permite para las columnas dinámicas con los textos
-  IF ls_col-fieldname CS ZCL_TRANSLATE_TOOL=>mc_field_txt_lang.
+  IF ls_col-fieldname CS zcl_spt_translate_tool=>mc_field_txt_lang.
 
 * El menú contextual saldrá
     READ TABLE <it_datos> ASSIGNING <wa> INDEX ls_row-index.
     IF sy-subrc = 0.
 
-      ASSIGN COMPONENT ZCL_TRANSLATE_TOOL=>mc_field_style OF STRUCTURE <wa> TO <field_style>.
+      ASSIGN COMPONENT zcl_spt_translate_tool=>mc_field_style OF STRUCTURE <wa> TO <field_style>.
       IF sy-subrc = 0.
 
 * Miro el estilo es de propuesta no confirmada. Si es así se muestra el menu.
@@ -714,7 +714,7 @@ FORM confirm_pprosal_field USING pe_fieldname
   FIELD-SYMBOLS <wa_field_style> TYPE LINE OF lvc_t_styl.
   DATA ld_fieldname TYPE fieldname.
 
-  ASSIGN COMPONENT zcl_translate_tool=>mc_field_style OF STRUCTURE ps_wa TO <field_style>.
+  ASSIGN COMPONENT zcl_spt_translate_tool=>mc_field_style OF STRUCTURE ps_wa TO <field_style>.
   IF sy-subrc = 0.
 
 * Miro el estilo es de propuesta no confirmada. Si es así se cambia a confirmada

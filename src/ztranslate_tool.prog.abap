@@ -6,7 +6,7 @@
 *& Author: Iván Rodrigo(Stratesys) 23/12/2013
 *&---------------------------------------------------------------------*
 
-REPORT  ztranslate_tool MESSAGE-ID ztranslate_tool.
+REPORT  ztranslate_tool MESSAGE-ID zspt_trans_order.
 
 INCLUDE ztranslate_tool_top.
 INCLUDE ztranslate_tool_c01.
