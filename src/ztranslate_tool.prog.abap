@@ -6,7 +6,7 @@
 *& Author: Iván Rodrigo(Stratesys) 23/12/2013
 *&---------------------------------------------------------------------*
 
-REPORT  ztranslate_tool MESSAGE-ID zspt_trans_order.
+REPORT  ztranslate_tool MESSAGE-ID zspt_translate_tool.
 
 INCLUDE ztranslate_tool_top.
 INCLUDE ztranslate_tool_c01.
@@ -15,17 +15,17 @@ INCLUDE ztranslate_tool_c01.
 *----------------------------------------------------------------------*
 * Selection screen
 *----------------------------------------------------------------------*
-SELECTION-SCREEN BEGIN OF BLOCK bl1 WITH FRAME TITLE text-bl1.
+SELECTION-SCREEN BEGIN OF BLOCK bl1 WITH FRAME TITLE TEXT-bl1.
 PARAMETERS p_object TYPE trobjtype OBLIGATORY.
 PARAMETERS p_oname TYPE tadir-obj_name.
 SELECTION-SCREEN END OF BLOCK bl1.
 
-SELECTION-SCREEN BEGIN OF BLOCK bl2 WITH FRAME TITLE text-bl2.
+SELECTION-SCREEN BEGIN OF BLOCK bl2 WITH FRAME TITLE TEXT-bl2.
 PARAMETERS p_olang TYPE lxe_log-targlng OBLIGATORY.
 SELECT-OPTIONS: s_tlang FOR lxe_log-targlng OBLIGATORY NO INTERVALS.
 SELECTION-SCREEN END OF BLOCK bl2.
 
-SELECTION-SCREEN BEGIN OF BLOCK bl3 WITH FRAME TITLE text-bl3.
+SELECTION-SCREEN BEGIN OF BLOCK bl3 WITH FRAME TITLE TEXT-bl3.
 PARAMETERS p_trkorr TYPE e070-trkorr.
 SELECTION-SCREEN SKIP.
 SELECTION-SCREEN COMMENT /1(49) text1.
