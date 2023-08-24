@@ -119,7 +119,7 @@ ENDFORM.                    " F4_OLANG
 *----------------------------------------------------------------------*
 FORM pbo_ps .
 * Texto informativo para el campo de niveles de profundidad.
-  text1 = text-i01.
+  text1 = TEXT-i01.
 
   LOOP AT SCREEN.
     CASE screen-name.
@@ -209,7 +209,7 @@ FORM set_params_selscreen .
   CALL METHOD mo_proces->set_params_selscreen
     EXPORTING
       iv_olang      = p_olang
-      it_tlang    = lt_tlang
+      it_tlang      = lt_tlang
       iv_trkorr     = p_trkorr
       iv_depth_refs = p_drefs.
 
@@ -229,8 +229,8 @@ ENDFORM.                    " SHOW_DATA
 *----------------------------------------------------------------------*
 FORM data_changed  CHANGING ps_data_changed TYPE REF TO cl_alv_changed_data_protocol.
   FIELD-SYMBOLS <ls_modif> TYPE lvc_s_modi.
-  FIELD-SYMBOLS <wa> TYPE ANY.
-  FIELD-SYMBOLS <field> TYPE ANY.
+  FIELD-SYMBOLS <wa> TYPE any.
+  FIELD-SYMBOLS <field> TYPE any.
   FIELD-SYMBOLS <lt_field_style> TYPE lvc_t_styl.
   FIELD-SYMBOLS <ls_field_style> TYPE LINE OF lvc_t_styl.
   DATA ld_fieldname TYPE fieldname.
@@ -414,60 +414,67 @@ FORM check_trkorr .
   DATA ld_order TYPE e070-trkorr.
 
   IF p_trkorr IS NOT INITIAL.
-* Se las tareas de las ordenes para ver si hay alguna valida.
-    CALL FUNCTION 'TR_READ_REQUEST_WITH_TASKS'
-      EXPORTING
-        iv_trkorr          = p_trkorr
-      IMPORTING
-        et_request_headers = lt_req_head
-        et_requests        = lt_req
-      EXCEPTIONS
-        invalid_input      = 1
-        OTHERS             = 2.
-    IF sy-subrc <> 0.
-      MESSAGE ID sy-msgid TYPE 'E' NUMBER sy-msgno WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
+    mo_proces->get_task_from_order( EXPORTING iv_order = p_trkorr
+                                    IMPORTING es_return = DATA(ls_return)
+                                              ev_task = p_trkorr ).
+    IF ls_return IS NOT INITIAL.
+      MESSAGE ID ls_return-id TYPE 'E' NUMBER ls_return-number WITH ls_return-message_v1 ls_return-message_v2 ls_return-message_v3 ls_return-message_v4.
     ENDIF.
+** Se las tareas de las ordenes para ver si hay alguna valida.
+*    CALL FUNCTION 'TR_READ_REQUEST_WITH_TASKS'
+*      EXPORTING
+*        iv_trkorr          = p_trkorr
+*      IMPORTING
+*        et_request_headers = lt_req_head
+*        et_requests        = lt_req
+*      EXCEPTIONS
+*        invalid_input      = 1
+*        OTHERS             = 2.
+*    IF sy-subrc <> 0.
+*      MESSAGE ID sy-msgid TYPE 'E' NUMBER sy-msgno WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
+*    ENDIF.
+*
+** Se mira si hay alguna tarea valida para el usuario.
+*    LOOP AT lt_req_head ASSIGNING <ls_req_head> WHERE trfunction = 'S'
+*                                                      AND trstatus = 'D'
+*                                                      AND as4user = sy-uname.
+*      EXIT.
+*    ENDLOOP.
+*    IF sy-subrc = 0.
+*      p_trkorr = <ls_req_head>-trkorr.
+*    ELSE.
+** En caso de no haberla se lee la primera posicion se indique la orden padre para leer
+** algunos datos y crear la tarea.
+*      LOOP AT lt_req_head ASSIGNING <ls_req_head> WHERE strkorr IS NOT INITIAL.
+*        EXIT.
+*      ENDLOOP.
+*      IF sy-subrc = 0.
+*
+*        CALL FUNCTION 'TRINT_INSERT_NEW_COMM'
+*          EXPORTING
+*            wi_kurztext       = <ls_req_head>-as4text
+*            wi_trfunction     = 'S'
+*            iv_username       = sy-uname
+*            wi_strkorr        = <ls_req_head>-strkorr
+*            wi_client         = sy-mandt
+*          IMPORTING
+*            we_trkorr         = p_trkorr
+*          EXCEPTIONS
+*            no_systemname     = 1
+*            no_systemtype     = 2
+*            no_authorization  = 3
+*            db_access_error   = 4
+*            file_access_error = 5
+*            enqueue_error     = 6
+*            number_range_full = 7
+*            invalid_input     = 8
+*            OTHERS            = 9.
+*        IF sy-subrc <> 0.
+*          MESSAGE ID sy-msgid TYPE 'E' NUMBER sy-msgno WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
+*        ENDIF.
+*      ENDIF.
+*    ENDIF.
 
-* Se mira si hay alguna tarea valida para el usuario.
-    LOOP AT lt_req_head ASSIGNING <ls_req_head> WHERE trfunction = 'S'
-                                                      AND trstatus = 'D'
-                                                      AND as4user = sy-uname.
-      EXIT.
-    ENDLOOP.
-    IF sy-subrc = 0.
-      p_trkorr = <ls_req_head>-trkorr.
-    ELSE.
-* En caso de no haberla se lee la primera posicion se indique la orden padre para leer
-* algunos datos y crear la tarea.
-      LOOP AT lt_req_head ASSIGNING <ls_req_head> WHERE strkorr IS NOT INITIAL.
-        EXIT.
-      ENDLOOP.
-      IF sy-subrc = 0.
-
-        CALL FUNCTION 'TRINT_INSERT_NEW_COMM'
-          EXPORTING
-            wi_kurztext       = <ls_req_head>-as4text
-            wi_trfunction     = 'S'
-            iv_username       = sy-uname
-            wi_strkorr        = <ls_req_head>-strkorr
-            wi_client         = sy-mandt
-          IMPORTING
-            we_trkorr         = p_trkorr
-          EXCEPTIONS
-            no_systemname     = 1
-            no_systemtype     = 2
-            no_authorization  = 3
-            db_access_error   = 4
-            file_access_error = 5
-            enqueue_error     = 6
-            number_range_full = 7
-            invalid_input     = 8
-            OTHERS            = 9.
-        IF sy-subrc <> 0.
-          MESSAGE ID sy-msgid TYPE 'E' NUMBER sy-msgno WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
-        ENDIF.
-      ENDIF.
-    ENDIF.
   ENDIF.
 
 ENDFORM.                    " CHECK_TRKORR
@@ -489,7 +496,7 @@ FORM toolbar_alv CHANGING ps_object TYPE REF TO cl_alv_event_toolbar_set
   CLEAR ls_toolbar.
   MOVE mc_transport TO ls_toolbar-function.
   MOVE icon_transport TO ls_toolbar-icon.
-  MOVE text-q01 TO ls_toolbar-quickinfo.
+  MOVE TEXT-q01 TO ls_toolbar-quickinfo.
   MOVE 1 TO ls_toolbar-butn_type. " Menu + opcion por defecto
   IF p_trkorr IS NOT INITIAL.
     MOVE space TO ls_toolbar-disabled.
@@ -503,7 +510,7 @@ FORM toolbar_alv CHANGING ps_object TYPE REF TO cl_alv_event_toolbar_set
   MOVE mc_pprosal TO ls_toolbar-function.
 *  MOVE icon_transport TO ls_toolbar-icon.
 *  MOVE text-q02 TO ls_toolbar-quickinfo.
-  MOVE text-q02 TO ls_toolbar-text.
+  MOVE TEXT-q02 TO ls_toolbar-text.
   MOVE 1 TO ls_toolbar-butn_type. " Menu + opcion por defecto
   APPEND ls_toolbar TO ps_object->mt_toolbar.
 
@@ -521,20 +528,20 @@ FORM menu_toolbar  CHANGING ps_object TYPE REF TO cl_ctmenu
   CASE ps_ucomm.
     WHEN mc_transport.
       ps_object->add_function( fcode = mc_transport
-                               text = text-t01 " Transport changes
+                               text = TEXT-t01 " Transport changes
                                icon =  icon_import_transport_request ).
 
       ps_object->add_function( fcode = mc_trans_obj
-                               text = text-t02 " Selective transport
+                               text = TEXT-t02 " Selective transport
                                icon  = icon_transport_proposal
                                disabled = abap_true ).
     WHEN mc_pprosal.
       ps_object->add_function( fcode = mc_pprosal
-                             text = text-t03 " Confirm all
+                             text = TEXT-t03 " Confirm all
                              icon =  icon_import_transport_request ).
 
       ps_object->add_function( fcode = mc_ok_pprosal
-                               text = text-f01 " Confirm proposal field
+                               text = TEXT-f01 " Confirm proposal field
                                icon  = icon_transport_proposal ).
   ENDCASE.
 ENDFORM.                    " MENU_TOOLBAR
@@ -596,7 +603,7 @@ ENDFORM.                    " INIT_DATA
 *       text
 *----------------------------------------------------------------------*
 FORM context_menu  USING  pe_object TYPE REF TO cl_ctmenu.
-  FIELD-SYMBOLS <wa> TYPE ANY.
+  FIELD-SYMBOLS <wa> TYPE any.
   FIELD-SYMBOLS <field_style> TYPE lvc_t_styl.
   DATA ls_col TYPE lvc_s_col.
   DATA ls_row TYPE lvc_s_row.
@@ -698,7 +705,7 @@ FORM assign_func_menu_context  USING  pe_object TYPE REF TO cl_ctmenu.
   CALL METHOD pe_object->add_function
     EXPORTING
       fcode = mc_ok_pprosal
-      text  = text-f01.
+      text  = TEXT-f01.
 
 ENDFORM.                    " ASSIGN_FUNC_MENU_CONTEXT
 *&---------------------------------------------------------------------*
@@ -708,8 +715,8 @@ ENDFORM.                    " ASSIGN_FUNC_MENU_CONTEXT
 *----------------------------------------------------------------------*
 FORM confirm_pprosal_field USING pe_fieldname
                             CHANGING ps_wa TYPE any.
-  FIELD-SYMBOLS <wa> TYPE ANY.
-  FIELD-SYMBOLS <field> TYPE ANY.
+  FIELD-SYMBOLS <wa> TYPE any.
+  FIELD-SYMBOLS <field> TYPE any.
   FIELD-SYMBOLS <field_style> TYPE lvc_t_styl.
   FIELD-SYMBOLS <wa_field_style> TYPE LINE OF lvc_t_styl.
   DATA ld_fieldname TYPE fieldname.
@@ -753,7 +760,7 @@ ENDFORM.                    " CONFIRM_PPROSAL_FIELD
 *       text
 *----------------------------------------------------------------------*
 FORM button_confirm_pprosal .
-  FIELD-SYMBOLS <wa> TYPE ANY.
+  FIELD-SYMBOLS <wa> TYPE any.
   DATA ls_col TYPE lvc_s_col.
   DATA ls_row TYPE lvc_s_row.
 
@@ -784,7 +791,7 @@ ENDFORM.                    " BUTTON_CONFIRM_PPROSAL
 *       text
 *----------------------------------------------------------------------*
 FORM confirm_all_pprosal .
-  FIELD-SYMBOLS <wa> TYPE ANY.
+  FIELD-SYMBOLS <wa> TYPE any.
   FIELD-SYMBOLS <ls_tlang> TYPE LINE OF lxe_tt_lxeisolang.
   DATA lt_tlang TYPE lxe_tt_lxeisolang.
   DATA ld_fieldname TYPE fieldname.
