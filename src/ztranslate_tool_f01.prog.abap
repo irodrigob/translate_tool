@@ -260,7 +260,7 @@ FORM data_changed  CHANGING ps_data_changed TYPE REF TO cl_alv_changed_data_prot
 
 * Para actualizar el campo de control tengo que reemplazar el texto del nombre del campo
 * por el de control.
-    REPLACE mo_proces->mc_field_txt_lang IN ld_fieldname
+    REPLACE mo_proces->mcvfield_txt_lang IN ld_fieldname
             WITH mo_proces->mc_field_ctrl_lang.
 
 * Actualizo el campo de control
@@ -627,7 +627,7 @@ FORM context_menu  USING  pe_object TYPE REF TO cl_ctmenu.
   ld_mostrar_menu = abap_false.
 
 * El menu contextual solo se permite para las columnas dinámicas con los textos
-  IF ls_col-fieldname CS zcl_spt_translate_tool=>mc_field_txt_lang.
+  IF ls_col-fieldname CS zcl_spt_translate_tool=>mcvfield_txt_lang.
 
 * El menú contextual saldrá
     READ TABLE <it_datos> ASSIGNING <wa> INDEX ls_row-index.
@@ -735,7 +735,7 @@ FORM confirm_pprosal_field USING pe_fieldname
       ld_fieldname = pe_fieldname.
 * Para actualizar el campo de control tengo que reemplazar el texto del nombre del campo
 * por el de control.
-      REPLACE mo_proces->mc_field_txt_lang IN ld_fieldname
+      REPLACE mo_proces->mcvfield_txt_lang IN ld_fieldname
               WITH mo_proces->mc_field_ctrl_lang.
 
 * Actualizo el campo de control
